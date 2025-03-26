@@ -1,0 +1,8 @@
+beautifulsoup4
+flask
+gapstatistics
+matplotlib
+pandas
+plotly
+requests
+scikit-learn
