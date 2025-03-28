@@ -24,12 +24,12 @@ def update_plot(n_clicks, pmids):
 	if not n_clicks:
 		return None
 	
-	pmids = pmids.split('\n')
+	pmids = pmids.split(' ')
 
-	response = requests.post('http://localhost:5000/cluster', json={'pmids': pmids})
+	response = requests.post('http://backend:5000/cluster', json={'pmids': pmids})
 	plot_html = response.json().get('plot_html')
 
 	return html.Iframe(srcDoc=plot_html, style={'width': '100%', 'height': '600px'})
 
 if __name__ == '__main__':
-	app.run(debug=True, port=3000)
+	app.run(debug=True, host='0.0.0.0', port=3000)
