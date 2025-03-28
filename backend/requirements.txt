@@ -1,6 +1,8 @@
 beautifulsoup4
 flask
 gapstatistics
+html5lib
+lxml
 matplotlib
 pandas
 plotly

@@ -19,7 +19,7 @@ def fetch_dataset_text_v1(gds_id):
 
 	gse_tag = re.compile(r'Accession: GSE\d+').search(response.text)
 	if not gse_tag:
-		return None, None, None, None, None, None
+		return None, None
 	
 	gse_tag = gse_tag.group()
 	gse_id = gse_tag.split(': ')[1]
@@ -35,7 +35,7 @@ def fetch_dataset_text_v1(gds_id):
 	summary = find_field_v1(soup, 'Summary')
 	overall_design = find_field_v1(soup, 'Overall design')
 
-	return f'{title} {organism} {experiment_type} {summary} {overall_design}'
+	return gse_id, f'{title} {organism} {experiment_type} {summary} {overall_design}'
 
 def fetch_dataset_text_v2(gds_id):
 	url = f'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=gds&id={gds_id}&retmode=xml'
@@ -49,7 +49,10 @@ def fetch_dataset_text_v2(gds_id):
 	summary = find_field_v2(soup, 'summary')
 	overall_design = find_field_v2(soup, 'overallDesign')
 
-	return f'{title} {organism} {experiment_type} {summary} {overall_design}'
+	gse_id = find_field_v2(soup, 'GSE')
+	gse_id = f'GSE{gse_id}' if gse_id else None
+
+	return gse_id, f'{title} {organism} {experiment_type} {summary} {overall_design}'
 
 def find_field_v1(soup, field_name):
 	field_tag = soup.find('td', text=field_name)
@@ -71,14 +74,18 @@ def find_field_v2(soup, field_name):
 
 def fetch_dataset_texts(pmid_gds):
 	pmids = []
+	gsd_ids = []
+	gse_ids = []
 	dataset_texts = []
 
 	for pmid, gds_ids in pmid_gds.items():
 		for gds_id in gds_ids:
-			dataset_text = fetch_dataset_text_v2(gds_id)
+			gse_id, dataset_text = fetch_dataset_text_v2(gds_id)
 			if dataset_text:
 				pmids.append(pmid)
+				gsd_ids.append(gds_id)
+				gse_ids.append(gse_id)
 				dataset_texts.append(dataset_text)
 
-	return pmids, dataset_texts
+	return pmids, gsd_ids, gse_ids, dataset_texts
 	
