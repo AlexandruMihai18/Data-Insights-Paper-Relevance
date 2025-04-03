@@ -27,7 +27,7 @@ def cluster_pmids():
 
 	print('Saving data...')
 
-	save_data_to_csv(pmids, gds_ids, gse_ids, dataset_texts, 'data/texts-data.csv')
+	save_data_to_csv(pmids, gds_ids, gse_ids, dataset_texts, 'texts-data.csv')
 
 	print('Clustering...')
 
